@@ -11,24 +11,23 @@ if repo.bare:
 
 
 username = "ai-vithink"
-
-
 # list of remotes
 remotes = repo.remotes
 url = remotes.origin.url
 
+
+def has_upstream(iterable):
+    for item in iterable:
+        if str(item) == "upstream":
+            return True
+    return False
+
+
 # check upstream
-if "upstream" not in remotes:
+if has_upstream(remotes):
     new_url_header, new_url_link = url.split(':')
     new_url = new_url_header + username + new_url_link.splot("/")[1]
-    Remote.create(repo, "upstream", url.split(''))
+    Remote.create(repo, "upstream", new_url)
 
 
-class MyProgressPrinter(RemoteProgress):
-    def update(self, op_code, cur_count, max_count=None, message=''):
-        print(op_code, cur_count, max_count, cur_count / (max_count or 100.0), message or "NO MESSAGE")
-
-
-# fetch
-for fetch_info in remotes.origin.fetch(progress=MyProgressPrinter()):
-    print("Updated %s to %s" % (fetch_info.ref, fetch_info.commit))
+remotes.origin.pull()
