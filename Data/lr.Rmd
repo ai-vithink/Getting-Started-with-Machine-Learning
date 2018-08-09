@@ -1,5 +1,11 @@
-data <- read.csv("D:/VIThink/ml workshop.Getting-Started-with-Machine-Learning/Data/Logistic_eg1.csv")
-#Model Fitting 
-train <- data[1:700,] 
-test <- data[700:834,] 
-#model <- glm(Survived ~.,family=binomial(link='logit'),data=train) summary(model)
+data <- read.csv(file.choose())
+train <- data[1:600,]
+test <- data[600:700,]
+model <- glm(QC_OK ~.,family=binomial(link='logit'),data=train)
+anova(model, test="Chisq")
+fitted.results <- predict(model,newdata=subset(test,select=c(1,2)),type='response')
+fitted.results <- ifelse(fitted.results > 0.5,1,0)
+misClasificError <- mean(fitted.results != test$Survived)
+print(paste('Accuracy',1-misClasificError)) 
+pairs(data) 
+plot(model)
